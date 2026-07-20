@@ -1,17 +1,34 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getPayload } from 'payload'
 
 import { Footer } from '@/components/Footer'
 import { HomeLocationCta } from '@/components/HomeLocationCta'
 import { InternalPageBackground } from '@/components/InternalPageBackground'
 import { Navbar } from '@/components/Navbar'
-import configPromise from '@payload-config'
+import {
+  getFooterGlobal,
+  getGeneralSettingsGlobal,
+  getHomeGlobal,
+  getShopsAndServicesItems,
+  getShopsAndServicesPageGlobal,
+} from '@/lib/payload-data'
+import { buildSEOMetadata } from '@/lib/seo'
 
 import type { Media, ShopsAndService } from '@/payload-types'
 import { RichText } from '@/components/RichText'
+import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getShopsAndServicesPageGlobal()
+
+  return buildSEOMetadata(page.seo, {
+    fallbackDescription: page.description,
+    fallbackTitle: 'Lojas e Serviços | Boulevard Garibaldi',
+    pathname: '/lojas-e-servicos',
+  })
+}
 
 function getMediaURL(media?: Media | string | null) {
   if (!media || typeof media === 'string') {
@@ -206,18 +223,12 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
 }
 
 export default async function ShopsAndServicesPage() {
-  const payload = await getPayload({ config: configPromise })
   const [page, home, footer, generalSettings, shopsResult] = await Promise.all([
-    payload.findGlobal({ slug: 'shops-and-services-page', depth: 1 }),
-    payload.findGlobal({ slug: 'home', depth: 1 }),
-    payload.findGlobal({ slug: 'footer', depth: 1 }),
-    payload.findGlobal({ slug: 'general-settings', depth: 1 }),
-    payload.find({
-      collection: 'shops-and-services',
-      depth: 1,
-      limit: 100,
-      sort: 'name',
-    }),
+    getShopsAndServicesPageGlobal(),
+    getHomeGlobal(),
+    getFooterGlobal(),
+    getGeneralSettingsGlobal(),
+    getShopsAndServicesItems(100),
   ])
 
   const logo = typeof footer.brand?.logo === 'string' ? null : footer.brand?.logo

@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { revalidateCollectionPaths, revalidateDeletedCollectionPaths } from '@/lib/revalidate'
+
 export const ShopsAndServices: CollectionConfig = {
   slug: 'shops-and-services',
   labels: {
@@ -12,6 +14,10 @@ export const ShopsAndServices: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'category', 'room', 'phone'],
+  },
+  hooks: {
+    afterChange: [revalidateCollectionPaths],
+    afterDelete: [revalidateDeletedCollectionPaths],
   },
   fields: [
     {

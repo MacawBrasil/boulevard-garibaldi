@@ -1,17 +1,34 @@
 import Link from 'next/link'
-import { getPayload } from 'payload'
 
 import { EventsGalleryCarousel, type GalleryCarouselItem } from '@/components/EventsGalleryCarousel'
 import { EventCard, type HomeEventCard } from '@/components/HomeEventsSection'
 import { Footer } from '@/components/Footer'
 import { InternalPageBackground } from '@/components/InternalPageBackground'
 import { Navbar } from '@/components/Navbar'
-import configPromise from '@payload-config'
+import {
+  getEventsPageGlobal,
+  getFooterGlobal,
+  getGalleryItems,
+  getGeneralSettingsGlobal,
+  getUpcomingEvents,
+} from '@/lib/payload-data'
+import { buildSEOMetadata } from '@/lib/seo'
 
 import type { Event, Gallery, Media } from '@/payload-types'
 import { RichText } from '@/components/RichText'
+import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getEventsPageGlobal()
+
+  return buildSEOMetadata(page.seo, {
+    fallbackDescription: page.description,
+    fallbackTitle: 'Eventos | Boulevard Garibaldi',
+    pathname: '/eventos',
+  })
+}
 
 function getMediaURL(media?: Media | string | null) {
   if (!media || typeof media === 'string') {
@@ -51,13 +68,6 @@ const galleryDateFormatter = new Intl.DateTimeFormat('pt-BR', {
   year: 'numeric',
   timeZone: 'America/Sao_Paulo',
 })
-
-function getTodayStartISOString() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  return today.toISOString()
-}
 
 function getWhatsappUrl(phone: string, message?: string | null) {
   const params = message ? `?text=${encodeURIComponent(message)}` : ''
@@ -136,28 +146,12 @@ function toGalleryCarouselItem(item: Gallery): GalleryCarouselItem | null {
 }
 
 export default async function EventsPage() {
-  const payload = await getPayload({ config: configPromise })
   const [page, footer, generalSettings, eventsResult, galleryResult] = await Promise.all([
-    payload.findGlobal({ slug: 'events-page', depth: 1 }),
-    payload.findGlobal({ slug: 'footer', depth: 1 }),
-    payload.findGlobal({ slug: 'general-settings', depth: 1 }),
-    payload.find({
-      collection: 'events',
-      depth: 1,
-      limit: 100,
-      sort: 'date',
-      where: {
-        date: {
-          greater_than_equal: getTodayStartISOString(),
-        },
-      },
-    }),
-    payload.find({
-      collection: 'gallery',
-      depth: 1,
-      limit: 24,
-      sort: '-date',
-    }),
+    getEventsPageGlobal(),
+    getFooterGlobal(),
+    getGeneralSettingsGlobal(),
+    getUpcomingEvents(100),
+    getGalleryItems(24),
   ])
 
   const logo = typeof footer.brand?.logo === 'string' ? null : footer.brand?.logo

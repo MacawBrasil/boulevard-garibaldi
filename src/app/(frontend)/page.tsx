@@ -1,17 +1,35 @@
 import Image from 'next/image'
-import { getPayload } from 'payload'
 
 import { Footer } from '@/components/Footer'
 import { HomeEventsSection, type HomeEventCard } from '@/components/HomeEventsSection'
 import { HomeLocationCta } from '@/components/HomeLocationCta'
 import { HomeDirectorySection, type DirectoryCard } from '@/components/HomeDirectorySection'
 import { Navbar } from '@/components/Navbar'
+import {
+  getEventsPageGlobal,
+  getFooterGlobal,
+  getGastronomyItems,
+  getHomeGlobal,
+  getShopsAndServicesItems,
+  getUpcomingEvents,
+} from '@/lib/payload-data'
+import { buildSEOMetadata } from '@/lib/seo'
 import { cn } from '@/lib/utils'
-import configPromise from '@payload-config'
 
 import type { Event, Gastronomy, Media, ShopsAndService } from '@/payload-types'
+import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
+
+export async function generateMetadata(): Promise<Metadata> {
+  const home = await getHomeGlobal()
+
+  return buildSEOMetadata(home.seo, {
+    fallbackDescription: home.section?.description,
+    fallbackTitle: 'Boulevard Garibaldi',
+    pathname: '/',
+  })
+}
 
 function getMediaURL(media?: Media | string | null) {
   if (!media || typeof media === 'string') {
@@ -61,13 +79,6 @@ const eventMonthFormatter = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'America/Sao_Paulo',
 })
 
-function getTodayStartISOString() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  return today.toISOString()
-}
-
 function toEventCard(item: Event): HomeEventCard | null {
   const image = typeof item.image === 'string' ? null : item.image
   const imageUrl = getMediaURL(image)
@@ -93,37 +104,14 @@ function toEventCard(item: Event): HomeEventCard | null {
 }
 
 export default async function HomePage() {
-  const payload = await getPayload({ config: configPromise })
-  const [home, footer, shopsPage, gastronomyPage, eventsPage, shopsResult, gastronomyResult, eventsResult] =
-    await Promise.all([
-      payload.findGlobal({ slug: 'home', depth: 1 }),
-      payload.findGlobal({ slug: 'footer', depth: 1 }),
-      payload.findGlobal({ slug: 'shops-and-services-page', depth: 1 }),
-      payload.findGlobal({ slug: 'gastronomy-page', depth: 1 }),
-      payload.findGlobal({ slug: 'events-page', depth: 1 }),
-      payload.find({
-        collection: 'shops-and-services',
-        depth: 1,
-        limit: 12,
-        sort: 'name',
-      }),
-      payload.find({
-        collection: 'gastronomy',
-        depth: 1,
-        limit: 12,
-        sort: 'name',
-      }),
-      payload.find({
-        collection: 'events',
-        depth: 1,
-        sort: 'date',
-        where: {
-          date: {
-            greater_than_equal: getTodayStartISOString(),
-          },
-        },
-      }),
-    ])
+  const [home, footer, eventsPage, shopsResult, gastronomyResult, eventsResult] = await Promise.all([
+    getHomeGlobal(),
+    getFooterGlobal(),
+    getEventsPageGlobal(),
+    getShopsAndServicesItems(12),
+    getGastronomyItems(12),
+    getUpcomingEvents(),
+  ])
 
   const heroSlide = home.hero?.slides?.[0]
   const heroImageUrl = getMediaURL(heroSlide?.image)

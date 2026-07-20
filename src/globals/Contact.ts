@@ -1,10 +1,14 @@
 import type { GlobalConfig } from 'payload'
 
 import { seoField } from '@/fields/seo'
+import { revalidateGlobalPaths } from '@/lib/revalidate'
 
 export const Contact: GlobalConfig = {
   slug: 'contact',
   label: 'Página de Contato',
+  hooks: {
+    afterChange: [revalidateGlobalPaths],
+  },
   fields: [
     {
       type: 'group',

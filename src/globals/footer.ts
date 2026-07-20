@@ -1,7 +1,12 @@
 import type { GlobalConfig } from 'payload'
 
+import { revalidateGlobalPaths } from '@/lib/revalidate'
+
 export const Footer: GlobalConfig = {
   slug: 'footer',
+  hooks: {
+    afterChange: [revalidateGlobalPaths],
+  },
   fields: [
     {
       type: 'group',

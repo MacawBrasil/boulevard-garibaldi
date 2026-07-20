@@ -1,8 +1,13 @@
 import type { GlobalConfig } from 'payload'
 
+import { revalidateGlobalPaths } from '@/lib/revalidate'
+
 export const GeneralSettings: GlobalConfig = {
   slug: 'general-settings',
   label: 'Configurações Gerais',
+  hooks: {
+    afterChange: [revalidateGlobalPaths],
+  },
   fields: [
     {
       type: 'group',

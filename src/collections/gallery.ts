@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { revalidateCollectionPaths, revalidateDeletedCollectionPaths } from '@/lib/revalidate'
+
 export const Gallery: CollectionConfig = {
   slug: 'gallery',
   labels: {
@@ -12,6 +14,10 @@ export const Gallery: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', 'createdAt'],
+  },
+  hooks: {
+    afterChange: [revalidateCollectionPaths],
+    afterDelete: [revalidateDeletedCollectionPaths],
   },
   fields: [
     {

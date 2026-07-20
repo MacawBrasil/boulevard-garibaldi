@@ -1,10 +1,14 @@
 import type { GlobalConfig } from 'payload'
 
 import { seoField } from '@/fields/seo'
+import { revalidateGlobalPaths } from '@/lib/revalidate'
 
 export const EventsPage: GlobalConfig = {
   slug: 'events-page',
   label: 'Página de Eventos',
+  hooks: {
+    afterChange: [revalidateGlobalPaths],
+  },
   fields: [
     {
       type: 'text',

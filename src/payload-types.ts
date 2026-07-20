@@ -604,6 +604,18 @@ export interface Home {
     cta: string;
     ctaLink: string;
   };
+  seo: {
+    /**
+     * Título usado em mecanismos de busca e compartilhamentos.
+     */
+    title: string;
+    /**
+     * Descrição usada em mecanismos de busca e compartilhamentos.
+     */
+    description: string;
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -891,6 +903,14 @@ export interface HomeSelect<T extends boolean = true> {
         title?: T;
         cta?: T;
         ctaLink?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
       };
   updatedAt?: T;
   createdAt?: T;

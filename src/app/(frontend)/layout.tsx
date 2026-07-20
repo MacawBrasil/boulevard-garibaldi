@@ -1,7 +1,9 @@
 import React from 'react'
 import { Work_Sans } from 'next/font/google'
+import type { Metadata } from 'next'
 
 import './styles.css'
+import { getSiteURL } from '@/lib/seo'
 
 const workSans = Work_Sans({
   display: 'swap',
@@ -9,16 +11,17 @@ const workSans = Work_Sans({
   variable: '--font-sans',
 })
 
-export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+export const metadata: Metadata = {
+  description: 'Boulevard Garibaldi',
+  metadataBase: new URL(getSiteURL()),
+  title: 'Boulevard Garibaldi',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="en" className="bg-[#F4F4F4]">
+    <html lang="pt-BR" className="bg-[#F4F4F4]">
       <body className={`${workSans.variable} ${workSans.className}`}>
         <main>{children}</main>
       </body>

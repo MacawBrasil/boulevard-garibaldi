@@ -1,15 +1,26 @@
 import Link from 'next/link'
-import { getPayload } from 'payload'
 
 import { ContactFormSection } from '@/components/ContactFormSection'
 import { Footer } from '@/components/Footer'
 import { InternalPageBackground } from '@/components/InternalPageBackground'
 import { Navbar } from '@/components/Navbar'
-import configPromise from '@payload-config'
+import { getContactGlobal, getFooterGlobal, getGeneralSettingsGlobal } from '@/lib/payload-data'
+import { buildSEOMetadata } from '@/lib/seo'
 
 import type { Media } from '@/payload-types'
+import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
+
+export async function generateMetadata(): Promise<Metadata> {
+  const contact = await getContactGlobal()
+
+  return buildSEOMetadata(contact.seo, {
+    fallbackDescription: contact.arrival.description,
+    fallbackTitle: `${contact.arrival.title} | Boulevard Garibaldi`,
+    pathname: '/como-chegar',
+  })
+}
 
 function getMediaURL(media?: Media | string | null) {
   if (!media || typeof media === 'string') {
@@ -110,11 +121,10 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
 }
 
 export default async function ContactPage() {
-  const payload = await getPayload({ config: configPromise })
   const [contact, footer, generalSettings] = await Promise.all([
-    payload.findGlobal({ slug: 'contact', depth: 1 }),
-    payload.findGlobal({ slug: 'footer', depth: 1 }),
-    payload.findGlobal({ slug: 'general-settings', depth: 1 }),
+    getContactGlobal(),
+    getFooterGlobal(),
+    getGeneralSettingsGlobal(),
   ])
 
   const logo = typeof footer.brand?.logo === 'string' ? null : footer.brand?.logo

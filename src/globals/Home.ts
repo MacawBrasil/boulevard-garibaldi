@@ -1,9 +1,14 @@
 import type { GlobalConfig } from 'payload'
 
 import { buttonFields } from '@/fields/button'
+import { seoField } from '@/fields/seo'
+import { revalidateGlobalPaths } from '@/lib/revalidate'
 
 export const Home: GlobalConfig = {
   slug: 'home',
+  hooks: {
+    afterChange: [revalidateGlobalPaths],
+  },
   fields: [
     {
       type: 'group',
@@ -96,5 +101,6 @@ export const Home: GlobalConfig = {
         ...buttonFields(),
       ],
     },
+    seoField(),
   ],
 }

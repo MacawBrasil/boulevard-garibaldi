@@ -1,10 +1,14 @@
 import type { GlobalConfig } from 'payload'
 
 import { seoField } from '@/fields/seo'
+import { revalidateGlobalPaths } from '@/lib/revalidate'
 
 export const ShopsAndServicesPage: GlobalConfig = {
   slug: 'shops-and-services-page',
   label: 'Página de Lojas e Serviços',
+  hooks: {
+    afterChange: [revalidateGlobalPaths],
+  },
   fields: [
     {
       type: 'upload',

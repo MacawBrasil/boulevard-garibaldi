@@ -1,17 +1,34 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getPayload } from 'payload'
 
 import { Footer } from '@/components/Footer'
 import { HomeLocationCta } from '@/components/HomeLocationCta'
 import { InternalPageBackground } from '@/components/InternalPageBackground'
 import { Navbar } from '@/components/Navbar'
-import configPromise from '@payload-config'
+import {
+  getFooterGlobal,
+  getGastronomyItems,
+  getGastronomyPageGlobal,
+  getGeneralSettingsGlobal,
+  getHomeGlobal,
+} from '@/lib/payload-data'
+import { buildSEOMetadata } from '@/lib/seo'
 
 import type { Gastronomy, Media } from '@/payload-types'
 import { RichText } from '@/components/RichText'
+import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getGastronomyPageGlobal()
+
+  return buildSEOMetadata(page.seo, {
+    fallbackDescription: page.description,
+    fallbackTitle: 'Gastronomia | Boulevard Garibaldi',
+    pathname: '/gastronomia',
+  })
+}
 
 function getMediaURL(media?: Media | string | null) {
   if (!media || typeof media === 'string') {
@@ -197,18 +214,12 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
 }
 
 export default async function GastronomyPage() {
-  const payload = await getPayload({ config: configPromise })
   const [page, home, footer, generalSettings, gastronomyResult] = await Promise.all([
-    payload.findGlobal({ slug: 'gastronomy-page', depth: 1 }),
-    payload.findGlobal({ slug: 'home', depth: 1 }),
-    payload.findGlobal({ slug: 'footer', depth: 1 }),
-    payload.findGlobal({ slug: 'general-settings', depth: 1 }),
-    payload.find({
-      collection: 'gastronomy',
-      depth: 1,
-      limit: 100,
-      sort: 'name',
-    }),
+    getGastronomyPageGlobal(),
+    getHomeGlobal(),
+    getFooterGlobal(),
+    getGeneralSettingsGlobal(),
+    getGastronomyItems(100),
   ])
 
   const logo = typeof footer.brand?.logo === 'string' ? null : footer.brand?.logo
