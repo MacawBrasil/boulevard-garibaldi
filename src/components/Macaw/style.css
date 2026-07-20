@@ -1,0 +1,47 @@
+#macaw #arara {
+  animation: none;
+  transition: translate 0.35s;
+}
+
+#macaw:hover #arara {
+  animation: arara-fly 2s ease-in-out infinite;
+  translate: 0px 1px;
+  animation-delay: 0.35s;
+}
+
+@keyframes arara-fly {
+  0% {
+    translate: 0px 1px;
+  }
+  50% {
+    translate: 0px -3px;
+  }
+  100% {
+    translate: 0px 1px;
+  }
+}
+
+#macaw #asas {
+  animation: none;
+  transition: rotate 0.1s;
+  transform-origin: 79.68px 17.9px;
+  rotate: 0deg;
+}
+
+#macaw:hover #asas {
+  animation: asas-fly 0.25s linear infinite;
+  rotate: -5deg;
+  animation-delay: 0.1s;
+}
+
+@keyframes asas-fly {
+  0% {
+    rotate: -5deg;
+  }
+  50% {
+    rotate: 5deg;
+  }
+  100% {
+    rotate: -5deg;
+  }
+}

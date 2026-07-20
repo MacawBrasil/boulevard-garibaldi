@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'shops-and-services': ShopsAndService;
+    gastronomy: Gastronomy;
+    events: Event;
+    gallery: Gallery;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +82,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'shops-and-services': ShopsAndServicesSelect<false> | ShopsAndServicesSelect<true>;
+    gastronomy: GastronomySelect<false> | GastronomySelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    gallery: GallerySelect<false> | GallerySelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +95,24 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    home: Home;
+    footer: Footer;
+    contact: Contact;
+    'events-page': EventsPage;
+    'gastronomy-page': GastronomyPage;
+    'shops-and-services-page': ShopsAndServicesPage;
+    'general-settings': GeneralSetting;
+  };
+  globalsSelect: {
+    home: HomeSelect<false> | HomeSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+    'events-page': EventsPageSelect<false> | EventsPageSelect<true>;
+    'gastronomy-page': GastronomyPageSelect<false> | GastronomyPageSelect<true>;
+    'shops-and-services-page': ShopsAndServicesPageSelect<false> | ShopsAndServicesPageSelect<true>;
+    'general-settings': GeneralSettingsSelect<false> | GeneralSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -163,6 +187,132 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops-and-services".
+ */
+export interface ShopsAndService {
+  id: string;
+  image: string | Media;
+  name: string;
+  /**
+   * Exemplo: Moda jovem
+   */
+  category: string;
+  /**
+   * Exemplo: Sala 17
+   */
+  room: string;
+  openingHours: {
+    /**
+     * Exemplo: 08:30 às 19h
+     */
+    weekdays: string;
+    /**
+     * Exemplo: 08:30 às 18h
+     */
+    saturday: string;
+  };
+  /**
+   * Exemplo: 54 3401 5982
+   */
+  phone: string;
+  socialLinks: {
+    network: 'instagram' | 'whatsapp' | 'facebook';
+    url: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gastronomy".
+ */
+export interface Gastronomy {
+  id: string;
+  image: string | Media;
+  name: string;
+  /**
+   * Exemplo: Moda jovem
+   */
+  category: string;
+  /**
+   * Exemplo: Sala 17
+   */
+  room: string;
+  openingHours: {
+    /**
+     * Exemplo: 08:30 às 19h
+     */
+    weekdays: string;
+    /**
+     * Exemplo: 08:30 às 18h
+     */
+    saturday: string;
+  };
+  /**
+   * Exemplo: 54 3401 5982
+   */
+  phone: string;
+  socialLinks: {
+    network: 'instagram' | 'whatsapp' | 'facebook';
+    url: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  image: string | Media;
+  /**
+   * Exemplo: Participe da Estação Bem-estar
+   */
+  title: string;
+  date: string;
+  /**
+   * Exemplo: 9h
+   */
+  startTime: string;
+  /**
+   * Exemplo: 13h
+   */
+  endTime: string;
+  /**
+   * Exemplo: Uma manhã para cuidar de você no Boulevard Garibaldi
+   */
+  description: string;
+  cta: {
+    label: string;
+    url: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery".
+ */
+export interface Gallery {
+  id: string;
+  image: string | Media;
+  /**
+   * Texto opcional exibido sobre a imagem.
+   */
+  title?: string | null;
+  date?: string | null;
+  /**
+   * Texto opcional exibido sobre a imagem.
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -192,6 +342,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'shops-and-services';
+        value: string | ShopsAndService;
+      } | null)
+    | ({
+        relationTo: 'gastronomy';
+        value: string | Gastronomy;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'gallery';
+        value: string | Gallery;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -277,6 +443,90 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops-and-services_select".
+ */
+export interface ShopsAndServicesSelect<T extends boolean = true> {
+  image?: T;
+  name?: T;
+  category?: T;
+  room?: T;
+  openingHours?:
+    | T
+    | {
+        weekdays?: T;
+        saturday?: T;
+      };
+  phone?: T;
+  socialLinks?:
+    | T
+    | {
+        network?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gastronomy_select".
+ */
+export interface GastronomySelect<T extends boolean = true> {
+  image?: T;
+  name?: T;
+  category?: T;
+  room?: T;
+  openingHours?:
+    | T
+    | {
+        weekdays?: T;
+        saturday?: T;
+      };
+  phone?: T;
+  socialLinks?:
+    | T
+    | {
+        network?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  date?: T;
+  startTime?: T;
+  endTime?: T;
+  description?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery_select".
+ */
+export interface GallerySelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  date?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -314,6 +564,520 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home".
+ */
+export interface Home {
+  id: string;
+  hero?: {
+    slides?:
+      | {
+          image?: (string | null) | Media;
+          /**
+           * Imagem para dispositivos móveis (tamanho: 375x667)
+           */
+          imageMobile?: (string | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  section: {
+    /**
+     * Imagem para dispositivos móveis (tamanho: 750x750)
+     */
+    image?: (string | null) | Media;
+    title: string;
+    description: string;
+    items?:
+      | {
+          icon?: (string | null) | Media;
+          title: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  banner: {
+    image?: (string | null) | Media;
+    title: string;
+    cta: string;
+    ctaLink: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: string;
+  brand: {
+    logo: string | Media;
+    address: string;
+  };
+  openingHours: {
+    title: string;
+    items?:
+      | {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  contacts: {
+    title: string;
+    items?:
+      | {
+          name: string;
+          phone: string;
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  social: {
+    title: string;
+    links?:
+      | {
+          network: 'instagram' | 'facebook';
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  legalLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: string;
+  arrival: {
+    breadcrumbLabel: string;
+    title: string;
+    description: string;
+    /**
+     * URL do Google Maps usada para exibir o mapa na página e abrir a localização.
+     */
+    mapUrl: string;
+  };
+  contactForm: {
+    title: string;
+    description: string;
+    backgroundImage?: (string | null) | Media;
+  };
+  seo: {
+    /**
+     * Título usado em mecanismos de busca e compartilhamentos.
+     */
+    title: string;
+    /**
+     * Descrição usada em mecanismos de busca e compartilhamentos.
+     */
+    description: string;
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events-page".
+ */
+export interface EventsPage {
+  id: string;
+  title: string;
+  description: string;
+  textPrimary: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Ese texto será exibido na página Home (seção de eventos).
+   */
+  text: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  seo: {
+    /**
+     * Título usado em mecanismos de busca e compartilhamentos.
+     */
+    title: string;
+    /**
+     * Descrição usada em mecanismos de busca e compartilhamentos.
+     */
+    description: string;
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gastronomy-page".
+ */
+export interface GastronomyPage {
+  id: string;
+  background: string | Media;
+  description: string;
+  group: {
+    title: string;
+    description: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  seo: {
+    /**
+     * Título usado em mecanismos de busca e compartilhamentos.
+     */
+    title: string;
+    /**
+     * Descrição usada em mecanismos de busca e compartilhamentos.
+     */
+    description: string;
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops-and-services-page".
+ */
+export interface ShopsAndServicesPage {
+  id: string;
+  background: string | Media;
+  description: string;
+  group: {
+    title: string;
+    description: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  seo: {
+    /**
+     * Título usado em mecanismos de busca e compartilhamentos.
+     */
+    title: string;
+    /**
+     * Descrição usada em mecanismos de busca e compartilhamentos.
+     */
+    description: string;
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "general-settings".
+ */
+export interface GeneralSetting {
+  id: string;
+  whatsapp: {
+    enabled?: boolean | null;
+    /**
+     * Use DDI + DDD + número, somente dígitos. Ex: 5551999999999
+     */
+    phone: string;
+    /**
+     * Mensagem opcional que será preenchida ao abrir o WhatsApp.
+     */
+    message?: string | null;
+  };
+  contactForm: {
+    recipientEmail: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_select".
+ */
+export interface HomeSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        slides?:
+          | T
+          | {
+              image?: T;
+              imageMobile?: T;
+              id?: T;
+            };
+      };
+  section?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        description?: T;
+        items?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              id?: T;
+            };
+      };
+  banner?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        cta?: T;
+        ctaLink?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        logo?: T;
+        address?: T;
+      };
+  openingHours?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  contacts?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              name?: T;
+              phone?: T;
+              email?: T;
+              id?: T;
+            };
+      };
+  social?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              network?: T;
+              url?: T;
+              id?: T;
+            };
+      };
+  legalLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  arrival?:
+    | T
+    | {
+        breadcrumbLabel?: T;
+        title?: T;
+        description?: T;
+        mapUrl?: T;
+      };
+  contactForm?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        backgroundImage?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events-page_select".
+ */
+export interface EventsPageSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  textPrimary?: T;
+  text?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gastronomy-page_select".
+ */
+export interface GastronomyPageSelect<T extends boolean = true> {
+  background?: T;
+  description?: T;
+  group?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops-and-services-page_select".
+ */
+export interface ShopsAndServicesPageSelect<T extends boolean = true> {
+  background?: T;
+  description?: T;
+  group?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "general-settings_select".
+ */
+export interface GeneralSettingsSelect<T extends boolean = true> {
+  whatsapp?:
+    | T
+    | {
+        enabled?: T;
+        phone?: T;
+        message?: T;
+      };
+  contactForm?:
+    | T
+    | {
+        recipientEmail?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
