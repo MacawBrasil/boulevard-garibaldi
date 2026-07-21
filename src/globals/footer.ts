@@ -140,24 +140,5 @@ export const Footer: GlobalConfig = {
         },
       ],
     },
-    {
-      type: 'array',
-      name: 'legalLinks',
-      label: 'Links legais',
-      fields: [
-        {
-          type: 'text',
-          name: 'label',
-          label: 'Texto',
-          required: true,
-        },
-        {
-          type: 'text',
-          name: 'url',
-          label: 'URL',
-          required: true,
-        },
-      ],
-    },
   ],
 }

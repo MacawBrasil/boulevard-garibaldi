@@ -73,6 +73,7 @@ export interface Config {
     gastronomy: Gastronomy;
     events: Event;
     gallery: Gallery;
+    'legal-pages': LegalPage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     gastronomy: GastronomySelect<false> | GastronomySelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
+    'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -313,6 +315,47 @@ export interface Gallery {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-pages".
+ */
+export interface LegalPage {
+  id: string;
+  title: string;
+  /**
+   * Exemplos: politica-de-cookies, politica-de-cordialidade, politica-de-privacidade, termos-de-uso
+   */
+  slug: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  seo: {
+    /**
+     * Título usado em mecanismos de busca e compartilhamentos.
+     */
+    title: string;
+    /**
+     * Descrição usada em mecanismos de busca e compartilhamentos.
+     */
+    description: string;
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -358,6 +401,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'gallery';
         value: string | Gallery;
+      } | null)
+    | ({
+        relationTo: 'legal-pages';
+        value: string | LegalPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -527,6 +574,25 @@ export interface GallerySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-pages_select".
+ */
+export interface LegalPagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -660,13 +726,6 @@ export interface Footer {
         }[]
       | null;
   };
-  legalLinks?:
-    | {
-        label: string;
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -963,13 +1022,6 @@ export interface FooterSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
-      };
-  legalLinks?:
-    | T
-    | {
-        label?: T;
-        url?: T;
-        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

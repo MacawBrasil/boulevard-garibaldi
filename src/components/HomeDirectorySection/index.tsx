@@ -146,7 +146,7 @@ function DirectoryRow({ items, panel, panelSide, interval }: DirectoryRowProps) 
 
   return (
     <div className="relative overflow-hidden bg-[#151817] lg:h-[467px]">
-      {panelSide === 'left' ? <IntroPanel panel={panel} side="left" /> : null}
+      <IntroPanel panel={panel} side={panelSide} />
 
       <Carousel
         setApi={setApi}
@@ -167,8 +167,6 @@ function DirectoryRow({ items, panel, panelSide, interval }: DirectoryRowProps) 
           ))}
         </CarouselContent>
       </Carousel>
-
-      {panelSide === 'right' ? <IntroPanel panel={panel} side="right" /> : null}
     </div>
   )
 }

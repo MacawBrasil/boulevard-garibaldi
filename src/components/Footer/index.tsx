@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Macaw } from '@/components/Macaw'
+import type { LegalPage } from '@/payload-types'
 
 type OpeningHourItem = {
   id?: string | null
@@ -22,12 +23,6 @@ type SocialLink = {
   url: string
 }
 
-type LegalLink = {
-  id?: string | null
-  label: string
-  url: string
-}
-
 type FooterProps = {
   logoUrl: string | null
   logoAlt: string
@@ -38,7 +33,7 @@ type FooterProps = {
   contacts: ContactItem[] | null | undefined
   socialTitle: string
   socialLinks: SocialLink[] | null | undefined
-  legalLinks: LegalLink[] | null | undefined
+  legalPages: LegalPage[] | null | undefined
 }
 
 const socialLabels = {
@@ -106,7 +101,7 @@ export function Footer({
   contacts,
   socialTitle,
   socialLinks,
-  legalLinks,
+  legalPages,
 }: FooterProps) {
   return (
     <footer className="bg-[#212322] text-white">
@@ -190,18 +185,18 @@ export function Footer({
                 })}
               </div>
 
-              {legalLinks?.length ? (
+              {legalPages?.length ? (
                 <nav
                   aria-label="Links legais"
                   className="mt-8 flex flex-col items-start gap-[17px]"
                 >
-                  {legalLinks.map((link) => (
+                  {legalPages.map((page) => (
                     <Link
-                      key={link.id || link.url}
-                      href={link.url}
+                      key={page.id}
+                      href={`/${page.slug}`}
                       className="text-[16px] font-normal leading-none text-white transition hover:opacity-75"
                     >
-                      {link.label}
+                      {page.title}
                     </Link>
                   ))}
                 </nav>

@@ -4,7 +4,12 @@ import { ContactFormSection } from '@/components/ContactFormSection'
 import { Footer } from '@/components/Footer'
 import { InternalPageBackground } from '@/components/InternalPageBackground'
 import { Navbar } from '@/components/Navbar'
-import { getContactGlobal, getFooterGlobal, getGeneralSettingsGlobal } from '@/lib/payload-data'
+import {
+  getContactGlobal,
+  getFooterGlobal,
+  getGeneralSettingsGlobal,
+  getLegalPages,
+} from '@/lib/payload-data'
 import { buildSEOMetadata } from '@/lib/seo'
 
 import type { Media } from '@/payload-types'
@@ -98,16 +103,10 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
       href={getWhatsappUrl(phone, message)}
       target="_blank"
       rel="noopener noreferrer"
-      className="absolute bottom-[26px] right-5 z-20 inline-flex items-center justify-center rounded-full bg-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] transition hover:scale-105 lg:right-12"
+      className="fixed bottom-5 right-5 z-50 inline-flex size-14 items-center justify-center rounded-full bg-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] transition hover:scale-105 md:bottom-[26px] md:size-[78px] lg:right-12"
       aria-label="Abrir WhatsApp"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="78"
-        height="78"
-        viewBox="0 0 78 78"
-        fill="none"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" className="size-full" viewBox="0 0 78 78" fill="none">
         <circle cx="39" cy="39" r="39" fill="white" />
         <path
           fillRule="evenodd"
@@ -121,9 +120,10 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
 }
 
 export default async function ContactPage() {
-  const [contact, footer, generalSettings] = await Promise.all([
+  const [contact, footer, legalPages, generalSettings] = await Promise.all([
     getContactGlobal(),
     getFooterGlobal(),
+    getLegalPages(),
     getGeneralSettingsGlobal(),
   ])
 
@@ -280,7 +280,7 @@ export default async function ContactPage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalLinks={footer.legalLinks}
+        legalPages={legalPages.docs}
       />
     </>
   )

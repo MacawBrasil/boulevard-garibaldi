@@ -10,6 +10,7 @@ import {
   getFooterGlobal,
   getGalleryItems,
   getGeneralSettingsGlobal,
+  getLegalPages,
   getUpcomingEvents,
 } from '@/lib/payload-data'
 import { buildSEOMetadata } from '@/lib/seo'
@@ -81,16 +82,10 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
       href={getWhatsappUrl(phone, message)}
       target="_blank"
       rel="noopener noreferrer"
-      className="absolute bottom-[26px] right-5 z-20 inline-flex  items-center justify-center rounded-full bg-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] transition hover:scale-105 lg:right-12"
+      className="fixed bottom-5 right-5 z-50 inline-flex size-14 items-center justify-center rounded-full bg-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] transition hover:scale-105 md:bottom-[26px] md:size-[78px] lg:right-12"
       aria-label="Abrir WhatsApp"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="78"
-        height="78"
-        viewBox="0 0 78 78"
-        fill="none"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" className="size-full" viewBox="0 0 78 78" fill="none">
         <circle cx="39" cy="39" r="39" fill="white" />
         <path
           fillRule="evenodd"
@@ -146,13 +141,15 @@ function toGalleryCarouselItem(item: Gallery): GalleryCarouselItem | null {
 }
 
 export default async function EventsPage() {
-  const [page, footer, generalSettings, eventsResult, galleryResult] = await Promise.all([
-    getEventsPageGlobal(),
-    getFooterGlobal(),
-    getGeneralSettingsGlobal(),
-    getUpcomingEvents(100),
-    getGalleryItems(24),
-  ])
+  const [page, footer, legalPages, generalSettings, eventsResult, galleryResult] =
+    await Promise.all([
+      getEventsPageGlobal(),
+      getFooterGlobal(),
+      getLegalPages(),
+      getGeneralSettingsGlobal(),
+      getUpcomingEvents(100),
+      getGalleryItems(24),
+    ])
 
   const logo = typeof footer.brand?.logo === 'string' ? null : footer.brand?.logo
   const logoUrl = getMediaURL(logo)
@@ -184,7 +181,10 @@ export default async function EventsPage() {
               <p className="mt-1 text-[clamp(1.125rem,2.5vw,1.75rem)] font-normal leading-normal">
                 {page.description}
               </p>
-              <RichText data={page.textPrimary} className='max-w-185 mx-auto mt-5 leading-tight text-xl tracking-tight text-[#212322]' />
+              <RichText
+                data={page.textPrimary}
+                className="max-w-185 mx-auto mt-5 leading-tight text-xl tracking-tight text-[#212322]"
+              />
             </div>
 
             {events.length ? (
@@ -238,7 +238,7 @@ export default async function EventsPage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalLinks={footer.legalLinks}
+        legalPages={legalPages.docs}
       />
     </>
   )

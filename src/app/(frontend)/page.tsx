@@ -1,6 +1,7 @@
 import Image from 'next/image'
 
 import { Footer } from '@/components/Footer'
+import { FloatingWhatsapp } from '@/components/FloatingWhatsapp'
 import { HomeEventsSection, type HomeEventCard } from '@/components/HomeEventsSection'
 import { HomeLocationCta } from '@/components/HomeLocationCta'
 import { HomeDirectorySection, type DirectoryCard } from '@/components/HomeDirectorySection'
@@ -9,7 +10,9 @@ import {
   getEventsPageGlobal,
   getFooterGlobal,
   getGastronomyItems,
+  getGeneralSettingsGlobal,
   getHomeGlobal,
+  getLegalPages,
   getShopsAndServicesItems,
   getUpcomingEvents,
 } from '@/lib/payload-data'
@@ -104,9 +107,20 @@ function toEventCard(item: Event): HomeEventCard | null {
 }
 
 export default async function HomePage() {
-  const [home, footer, eventsPage, shopsResult, gastronomyResult, eventsResult] = await Promise.all([
+  const [
+    home,
+    footer,
+    legalPages,
+    generalSettings,
+    eventsPage,
+    shopsResult,
+    gastronomyResult,
+    eventsResult,
+  ] = await Promise.all([
     getHomeGlobal(),
     getFooterGlobal(),
+    getLegalPages(),
+    getGeneralSettingsGlobal(),
     getEventsPageGlobal(),
     getShopsAndServicesItems(12),
     getGastronomyItems(12),
@@ -252,6 +266,13 @@ export default async function HomePage() {
         />
       ) : null}
 
+      {generalSettings.whatsapp.enabled ? (
+        <FloatingWhatsapp
+          phone={generalSettings.whatsapp.phone}
+          message={generalSettings.whatsapp.message}
+        />
+      ) : null}
+
       <Footer
         logoUrl={logoUrl}
         logoAlt={logoAlt}
@@ -262,7 +283,7 @@ export default async function HomePage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalLinks={footer.legalLinks}
+        legalPages={legalPages.docs}
       />
     </>
   )

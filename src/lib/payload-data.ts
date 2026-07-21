@@ -48,6 +48,34 @@ export const getShopsAndServicesPageGlobal = cache(async () => {
   return payload.findGlobal({ slug: 'shops-and-services-page', depth: 1 })
 })
 
+export const getLegalPageBySlug = cache(async (slug: string) => {
+  const payload = await getPayloadClient()
+
+  const result = await payload.find({
+    collection: 'legal-pages',
+    depth: 1,
+    limit: 1,
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+  })
+
+  return result.docs[0] || null
+})
+
+export const getLegalPages = cache(async () => {
+  const payload = await getPayloadClient()
+
+  return payload.find({
+    collection: 'legal-pages',
+    depth: 1,
+    limit: 100,
+    sort: 'title',
+  })
+})
+
 export const getGastronomyItems = cache(async (limit: number) => {
   const payload = await getPayloadClient()
 
