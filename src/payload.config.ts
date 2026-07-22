@@ -4,6 +4,8 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { pt } from 'payload/i18n/pt'
+import { en } from 'payload/i18n/en'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -30,6 +32,10 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  i18n: {
+      fallbackLanguage: 'pt',
+      supportedLanguages: { en, pt },
+    },
   collections: [Users, Media, ShopsAndServices, Gastronomy, Events, Gallery, LegalPages],
   globals: [
     Home,
