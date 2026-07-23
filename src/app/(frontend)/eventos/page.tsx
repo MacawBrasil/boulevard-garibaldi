@@ -10,10 +10,10 @@ import {
   getFooterGlobal,
   getGalleryItems,
   getGeneralSettingsGlobal,
-  getLegalPages,
   getUpcomingEvents,
 } from '@/lib/payload-data'
 import { buildSEOMetadata } from '@/lib/seo'
+import { normalizePhoneNumber } from '@/lib/utils'
 
 import type { Event, Gallery, Media } from '@/payload-types'
 import { RichText } from '@/components/RichText'
@@ -73,7 +73,7 @@ const galleryDateFormatter = new Intl.DateTimeFormat('pt-BR', {
 function getWhatsappUrl(phone: string, message?: string | null) {
   const params = message ? `?text=${encodeURIComponent(message)}` : ''
 
-  return `https://wa.me/${phone}${params}`
+  return `https://wa.me/${normalizePhoneNumber(phone)}${params}`
 }
 
 function FloatingWhatsapp({ phone, message }: { phone: string; message?: string | null }) {
@@ -141,11 +141,10 @@ function toGalleryCarouselItem(item: Gallery): GalleryCarouselItem | null {
 }
 
 export default async function EventsPage() {
-  const [page, footer, legalPages, generalSettings, eventsResult, galleryResult] =
+  const [page, footer, generalSettings, eventsResult, galleryResult] =
     await Promise.all([
       getEventsPageGlobal(),
       getFooterGlobal(),
-      getLegalPages(),
       getGeneralSettingsGlobal(),
       getUpcomingEvents(100),
       getGalleryItems(24),
@@ -238,7 +237,7 @@ export default async function EventsPage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalPages={legalPages.docs}
+        legalDocuments={footer.legalDocuments?.items}
       />
     </>
   )

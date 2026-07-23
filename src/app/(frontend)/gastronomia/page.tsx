@@ -11,9 +11,9 @@ import {
   getGastronomyPageGlobal,
   getGeneralSettingsGlobal,
   getHomeGlobal,
-  getLegalPages,
 } from '@/lib/payload-data'
 import { buildSEOMetadata } from '@/lib/seo'
+import { normalizePhoneHref, normalizePhoneNumber } from '@/lib/utils'
 
 import type { Gastronomy, Media } from '@/payload-types'
 import { RichText } from '@/components/RichText'
@@ -47,76 +47,46 @@ function getMediaURL(media?: Media | string | null) {
   return null
 }
 
-function normalizePhoneHref(phone: string) {
-  const digits = phone.replace(/\D/g, '')
-
-  if (!digits) {
-    return ''
-  }
-
-  return `tel:${digits}`
-}
-
 function getWhatsappUrl(phone: string, message?: string | null) {
   const params = message ? `?text=${encodeURIComponent(message)}` : ''
 
-  return `https://wa.me/${phone}${params}`
+  return `https://wa.me/${normalizePhoneNumber(phone)}${params}`
 }
 
-function InstagramIcon() {
-  return (
-    <svg aria-hidden="true" className="size-full" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="2" />
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
-      <circle cx="17.25" cy="6.75" r="1.25" fill="currentColor" />
-    </svg>
-  )
-}
-
-function FacebookIcon() {
-  return (
-    <svg aria-hidden="true" className="size-full" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M14.25 8.25H16V5.5h-2.25c-2.45 0-4 1.55-4 4v1.75H7.5V14h2.25v6.5h3V14h2.55l.45-2.75h-3V9.5c0-.8.35-1.25 1.5-1.25Z" />
-    </svg>
-  )
-}
-
-function WhatsappIcon() {
-  return (
-    <svg aria-hidden="true" className="size-full" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12.04 3.5A8.4 8.4 0 0 0 4.9 16.33L4 20.5l4.27-1.03A8.4 8.4 0 1 0 12.04 3.5Zm0 1.75a6.65 6.65 0 0 1 5.58 10.27l-.23.35.54 2.32-2.38-.57-.34.2A6.65 6.65 0 0 1 6.55 8a6.6 6.6 0 0 1 5.49-2.75Zm-2.5 3.38c-.15 0-.38.05-.58.27-.2.22-.76.74-.76 1.8 0 1.07.78 2.1.89 2.24.11.15 1.5 2.4 3.72 3.27 1.84.72 2.22.58 2.62.54.4-.04 1.3-.53 1.48-1.04.18-.5.18-.94.13-1.04-.06-.1-.2-.16-.42-.27-.22-.11-1.3-.64-1.5-.71-.2-.07-.35-.11-.5.11-.15.22-.57.71-.7.86-.13.15-.26.16-.48.05-.22-.11-.93-.34-1.77-1.09-.65-.58-1.1-1.3-1.22-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.38.11-.13.15-.22.22-.37.07-.15.04-.27-.02-.38-.05-.11-.5-1.2-.68-1.64-.18-.43-.36-.37-.5-.38h-.42Z" />
-    </svg>
-  )
-}
-
-function SocialIcon({ network }: { network: Gastronomy['socialLinks'][number]['network'] }) {
-  if (network === 'facebook') {
-    return <FacebookIcon />
+function getSocialLinkHref(link: Gastronomy['socialLinks'][number]) {
+  if (!link.isWhatsappNumber) {
+    return link.url
   }
 
-  if (network === 'whatsapp') {
-    return <WhatsappIcon />
-  }
+  const whatsappNumber = normalizePhoneNumber(link.url)
 
-  return <InstagramIcon />
+  return whatsappNumber ? `https://wa.me/${whatsappNumber}` : link.url
 }
 
 function SocialLinkBadge({ link }: { link: Gastronomy['socialLinks'][number] }) {
-  const names = {
-    facebook: 'Facebook',
-    instagram: 'Instagram',
-    whatsapp: 'WhatsApp',
+  const iconUrl = getMediaURL(link.icon)
+  const href = getSocialLinkHref(link)
+
+  if (!iconUrl) {
+    return null
   }
 
   return (
     <Link
-      href={link.url}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex size-10 items-center justify-center text-[#212322] transition hover:text-[#874230]"
-      aria-label={names[link.network]}
+      className="inline-flex size-10 items-center justify-center transition hover:opacity-75"
+      aria-label={link.title}
     >
-      <SocialIcon network={link.network} />
+      <Image
+        src={iconUrl}
+        alt=""
+        width={40}
+        height={40}
+        unoptimized
+        className="size-10 object-contain"
+      />
     </Link>
   )
 }
@@ -209,11 +179,10 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
 }
 
 export default async function GastronomyPage() {
-  const [page, home, footer, legalPages, generalSettings, gastronomyResult] = await Promise.all([
+  const [page, home, footer, generalSettings, gastronomyResult] = await Promise.all([
     getGastronomyPageGlobal(),
     getHomeGlobal(),
     getFooterGlobal(),
-    getLegalPages(),
     getGeneralSettingsGlobal(),
     getGastronomyItems(100),
   ])
@@ -228,7 +197,7 @@ export default async function GastronomyPage() {
 
   return (
     <>
-      <section className="relative h-[522px] overflow-hidden bg-[#212322] text-white">
+      <section className="relative h-[430px] overflow-hidden bg-[#212322] text-white md:h-[522px]">
         {pageBackgroundUrl ? (
           <Image
             src={pageBackgroundUrl}
@@ -246,7 +215,7 @@ export default async function GastronomyPage() {
 
         <Navbar hasBackgroundImage logoAlt={logoAlt} logoUrl={logoUrl} />
 
-        <div className="layout-container relative z-10 flex h-full flex-col pt-36 md:pt-[203px]">
+        <div className="layout-container relative z-10 flex h-full flex-col pt-28 md:pt-[203px]">
           <nav className="flex items-center gap-1 text-sm uppercase leading-none text-white">
             <Link href="/" className="font-normal transition hover:opacity-75">
               Home
@@ -255,7 +224,7 @@ export default async function GastronomyPage() {
             <span className="font-bold">Gastronomia</span>
           </nav>
 
-          <div className="mt-[72px] text-center">
+          <div className="mt-12 text-center md:mt-[72px]">
             <h1 className="text-[clamp(3rem,7vw,4.625rem)] font-bold leading-none tracking-normal">
               Gastronomia
             </h1>
@@ -325,7 +294,7 @@ export default async function GastronomyPage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalPages={legalPages.docs}
+        legalDocuments={footer.legalDocuments?.items}
       />
     </>
   )

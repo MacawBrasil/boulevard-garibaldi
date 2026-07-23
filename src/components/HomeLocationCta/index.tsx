@@ -56,7 +56,7 @@ export function HomeLocationCta({
 
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1920px] items-center px-5 sm:px-8 lg:px-0">
         <div className="ml-auto w-full max-w-[470px] lg:mr-[20.9%]">
-          <h2 className="text-[clamp(2.5rem,6vw,3.875rem)] font-bold leading-none tracking-normal text-white lg:text-[62px]">
+          <h2 className="text-[clamp(2.5rem,6vw,3.875rem)] font-bold leading-none tracking-normal text-white lg:text-[3.875rem]">
             {firstLine}
             {secondLine ? <span className="block font-black italic">{secondLine}</span> : null}
           </h2>

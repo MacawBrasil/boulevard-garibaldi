@@ -23,7 +23,6 @@ const collectionPaths = {
   events: ['/', '/eventos'],
   gallery: ['/eventos'],
   gastronomy: ['/', '/gastronomia'],
-  'legal-pages': publicPaths,
   media: publicPaths,
   'shops-and-services': ['/', '/lojas-e-servicos'],
 } satisfies Record<string, readonly string[]>
@@ -32,11 +31,7 @@ function getPaths(map: Record<string, readonly string[]>, slug: string) {
   return map[slug] || publicPaths
 }
 
-function getCollectionPaths(slug: string, doc?: Record<string, unknown>) {
-  if (slug === 'legal-pages' && typeof doc?.slug === 'string') {
-    return [...publicPaths, `/${doc.slug}`]
-  }
-
+function getCollectionPaths(slug: string) {
   return getPaths(collectionPaths, slug)
 }
 
@@ -59,10 +54,6 @@ export const revalidateGlobalPaths: GlobalAfterChangeHook = ({ doc, global, req 
   )
   revalidateFrontendPaths(paths)
 
-  if (global.slug === 'footer') {
-    revalidatePath('/[slug]', 'page')
-  }
-
   return doc
 }
 
@@ -71,7 +62,7 @@ export const revalidateCollectionPaths: CollectionAfterChangeHook = ({ collectio
     return doc
   }
 
-  const paths = getCollectionPaths(collection.slug, doc)
+  const paths = getCollectionPaths(collection.slug)
   req.payload.logger.info(
     `Revalidating frontend paths for collection "${collection.slug}": ${paths.join(', ')}`,
   )
@@ -89,7 +80,7 @@ export const revalidateDeletedCollectionPaths: CollectionAfterDeleteHook = ({
     return doc
   }
 
-  const paths = getCollectionPaths(collection.slug, doc)
+  const paths = getCollectionPaths(collection.slug)
   req.payload.logger.info(
     `Revalidating frontend paths after delete in collection "${collection.slug}": ${paths.join(
       ', ',

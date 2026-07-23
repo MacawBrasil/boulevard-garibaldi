@@ -13,7 +13,6 @@ import { ShopsAndServices } from './collections/shopsAndServices'
 import { Gastronomy } from './collections/gastronomy'
 import { Events } from './collections/events'
 import { Gallery } from './collections/gallery'
-import { LegalPages } from './collections/legalPages'
 import { Contact } from './globals/Contact'
 import { EventsPage } from './globals/EventsPage'
 import { GastronomyPage } from './globals/GastronomyPage'
@@ -36,7 +35,7 @@ export default buildConfig({
       fallbackLanguage: 'pt',
       supportedLanguages: { en, pt },
     },
-  collections: [Users, Media, ShopsAndServices, Gastronomy, Events, Gallery, LegalPages],
+  collections: [Users, Media, ShopsAndServices, Gastronomy, Events, Gallery],
   globals: [
     Home,
     Footer,

@@ -1,9 +1,11 @@
 import Link from 'next/link'
 
+import { normalizePhoneNumber } from '@/lib/utils'
+
 function getWhatsappUrl(phone: string, message?: string | null) {
   const params = message ? `?text=${encodeURIComponent(message)}` : ''
 
-  return `https://wa.me/${phone}${params}`
+  return `https://wa.me/${normalizePhoneNumber(phone)}${params}`
 }
 
 export function FloatingWhatsapp({ phone, message }: { phone: string; message?: string | null }) {

@@ -11,6 +11,7 @@ export const ShopsAndServices: CollectionConfig = {
   access: {
     read: () => true,
   },
+  orderable:true,
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'category', 'room', 'phone'],
@@ -26,6 +27,9 @@ export const ShopsAndServices: CollectionConfig = {
       label: 'Imagem',
       relationTo: 'media',
       required: true,
+      admin: {
+        description: 'Dimensões padrão (566x662)',
+      },
     },
     {
       type: 'text',
@@ -94,30 +98,41 @@ export const ShopsAndServices: CollectionConfig = {
       maxRows: 3,
       fields: [
         {
-          type: 'select',
-          name: 'network',
-          label: 'Rede social',
+          type: 'text',
+          name: 'title',
+          label: 'Nome',
           required: true,
-          options: [
-            {
-              label: 'Instagram',
-              value: 'instagram',
-            },
-            {
-              label: 'WhatsApp',
-              value: 'whatsapp',
-            },
-            {
-              label: 'Facebook',
-              value: 'facebook',
-            },
-          ],
+          admin: {
+            description: 'Exemplo: Instagram, WhatsApp, Facebook.',
+          },
+        },
+        {
+          type: 'upload',
+          name: 'icon',
+          label: 'Ícone',
+          relationTo: 'media',
+          required: true,
+          admin: {
+            description: 'Dimensões recomendadas: 40x40px. Use SVG ou PNG com fundo transparente.',
+          },
+        },
+        {
+          type: 'checkbox',
+          name: 'isWhatsappNumber',
+          label: 'É número de WhatsApp?',
+          defaultValue: false,
+          admin: {
+            description: 'Marque esta opção quando o campo abaixo for um telefone. O site vai montar o link wa.me automaticamente.',
+          },
         },
         {
           type: 'text',
           name: 'url',
-          label: 'URL',
+          label: 'URL ou número',
           required: true,
+          admin: {
+            description: 'Para WhatsApp, informe o número com DDD. Exemplo: 54 99999 9999.',
+          },
         },
       ],
     },

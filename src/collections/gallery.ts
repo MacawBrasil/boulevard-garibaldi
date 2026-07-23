@@ -26,6 +26,9 @@ export const Gallery: CollectionConfig = {
       label: 'Imagem',
       relationTo: 'media',
       required: true,
+      admin: {
+        description: 'Dimensões padrão (1520x750)',
+      },
     },
     {
       type: 'text',

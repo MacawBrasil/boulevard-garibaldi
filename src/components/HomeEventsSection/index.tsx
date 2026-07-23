@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { RichText } from '../RichText'
-import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { cn } from '@/lib/utils'
 
 export type HomeEventCard = {
@@ -19,13 +18,13 @@ export type HomeEventCard = {
 
 type HomeEventsSectionProps = {
   events: HomeEventCard[]
-  text: SerializedEditorState
+  text: any
 }
 
 export function EventCard({ event }: { event: HomeEventCard }) {
   return (
     <article className="@container group relative aspect-square w-full overflow-hidden rounded-[24px] bg-[#a08769] text-white shadow-none transition-all duration-300 hover:shadow-[-12px_16px_14.95px_rgba(0,0,0,0.25)] focus-within:shadow-[-12px_16px_14.95px_rgba(0,0,0,0.25)]">
-      <div className="relative h-[76%] overflow-hidden transition-[height] duration-300 group-hover:h-[58.933%] group-focus-within:h-[58.933%]">
+      <div className="relative h-[58.933%] overflow-hidden transition-[height] duration-300 md:h-[76%] md:group-hover:h-[58.933%] md:group-focus-within:h-[58.933%]">
         <Image
           src={event.imageUrl}
           alt={event.imageAlt}
@@ -34,8 +33,8 @@ export function EventCard({ event }: { event: HomeEventCard }) {
           unoptimized
           className="object-cover transition duration-500 group-hover:scale-[1.02] group-focus-within:scale-[1.02]"
         />
-        <div className="absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/35 group-focus-within:bg-black/35" />
-        <div className="absolute left-[6.5%] top-[32.5%] translate-y-3 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-30 group-focus-within:translate-y-0 group-focus-within:opacity-30">
+        <div className="absolute inset-0 bg-black/35 transition duration-300 md:bg-black/0 md:group-hover:bg-black/35 md:group-focus-within:bg-black/35" />
+        <div className="absolute left-[6.5%] top-[32.5%] translate-y-0 opacity-30 transition duration-300 md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-30 md:group-focus-within:translate-y-0 md:group-focus-within:opacity-30">
           <p className="text-[clamp(4rem,21.55cqw,10.125rem)] font-bold leading-[1.1] tracking-normal text-white">
             {event.dayLabel}
           </p>
@@ -45,7 +44,7 @@ export function EventCard({ event }: { event: HomeEventCard }) {
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 h-[24%] overflow-hidden bg-[#a08769] px-[6.5%] pb-[5%] pt-[4.4%] transition-[height] duration-300 group-hover:h-[41.067%] group-focus-within:h-[41.067%]">
+      <div className="absolute inset-x-0 bottom-0 h-[41.067%] overflow-hidden bg-[#a08769] px-[6.5%] pb-[5%] pt-[4.4%] transition-[height] duration-300 md:h-[24%] md:group-hover:h-[41.067%] md:group-focus-within:h-[41.067%]">
         <h3 className="line-clamp-1 text-[clamp(1.25rem,5.333cqw,2.5rem)] font-bold leading-none text-white">
           {event.title}
         </h3>
@@ -53,13 +52,13 @@ export function EventCard({ event }: { event: HomeEventCard }) {
           {event.timeLabel}
         </p>
 
-        <p className="mt-0 line-clamp-2 max-h-0 text-[clamp(1rem,4cqw,1.875rem)] font-normal leading-none text-white opacity-0 transition-all duration-300 group-hover:mt-[3.6%] group-hover:max-h-20 group-hover:opacity-100 group-focus-within:mt-[3.6%] group-focus-within:max-h-20 group-focus-within:opacity-100">
+        <p className="mt-[3.6%] line-clamp-2 max-h-20 text-[clamp(1rem,4cqw,1.875rem)] font-normal leading-none text-white opacity-100 transition-all duration-300 md:mt-0 md:max-h-0 md:opacity-0 md:group-hover:mt-[3.6%] md:group-hover:max-h-20 md:group-hover:opacity-100 md:group-focus-within:mt-[3.6%] md:group-focus-within:max-h-20 md:group-focus-within:opacity-100">
           {event.description}
         </p>
 
         <Link
           href={event.ctaUrl}
-          className="pointer-events-none mt-0 inline-flex max-h-0 items-center overflow-hidden rounded-full border border-white px-[4%] py-0 text-[clamp(1rem,4cqw,1.875rem)] font-normal leading-none text-white opacity-0 transition-all duration-300 hover:bg-white hover:text-[#a08769] focus-visible:bg-white focus-visible:text-[#a08769] focus-visible:outline-none group-hover:pointer-events-auto group-hover:mt-[2.2%] group-hover:max-h-16 group-hover:py-[1.35%] group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:mt-[2.2%] group-focus-within:max-h-16 group-focus-within:py-[1.35%] group-focus-within:opacity-100"
+          className="mt-[2.2%] inline-flex max-h-16 items-center overflow-hidden rounded-full border border-white px-[4%] py-[1.35%] text-[clamp(1rem,4cqw,1.875rem)] font-normal leading-none text-white opacity-100 transition-all duration-300 hover:bg-white hover:text-[#a08769] focus-visible:bg-white focus-visible:text-[#a08769] focus-visible:outline-none md:pointer-events-none md:mt-0 md:max-h-0 md:py-0 md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:mt-[2.2%] md:group-hover:max-h-16 md:group-hover:py-[1.35%] md:group-hover:opacity-100 md:group-focus-within:pointer-events-auto md:group-focus-within:mt-[2.2%] md:group-focus-within:max-h-16 md:group-focus-within:py-[1.35%] md:group-focus-within:opacity-100"
         >
           {event.ctaLabel}
         </Link>

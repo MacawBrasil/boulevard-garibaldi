@@ -52,25 +52,31 @@ function useAutoplay(api: CarouselApi | undefined, interval: number) {
   }, [api, interval])
 }
 
-function DirectoryCardItem({ item }: { item: DirectoryCard }) {
+function DirectoryCardItem({ href, item }: { href: string; item: DirectoryCard }) {
   return (
-    <article className="group relative h-full min-h-[230px] overflow-hidden bg-[#151817] text-white sm:min-h-[260px] lg:h-[467px] lg:min-h-0">
-      <Image
-        src={item.imageUrl}
-        alt={item.imageAlt}
-        fill
-        sizes="(min-width: 1280px) 20vw, (min-width: 768px) 33vw, 80vw"
-        unoptimized
-        className="object-cover transition duration-500 group-hover:scale-[1.03]"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-        <h3 className="text-sm font-bold leading-none text-white">{item.name}</h3>
-        <p className="mt-2 text-[11px] font-medium leading-none text-white/85">
-          Ver informações {'->'}
-        </p>
-      </div>
-    </article>
+    <Link
+      href={href}
+      className="group relative block h-full min-h-[230px] overflow-hidden bg-[#151817] text-white sm:min-h-[260px] lg:h-[467px] lg:min-h-0"
+      aria-label={`Ver ${item.name}`}
+    >
+      <article className="h-full">
+        <Image
+          src={item.imageUrl}
+          alt={item.imageAlt}
+          fill
+          sizes="(min-width: 1280px) 20vw, (min-width: 768px) 33vw, 80vw"
+          unoptimized
+          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+          <h3 className="text-sm font-bold leading-none text-white">{item.name}</h3>
+          <p className="mt-2 text-[0.6875rem] font-medium leading-none text-white/85">
+            Ver informações {'->'}
+          </p>
+        </div>
+      </article>
+    </Link>
   )
 }
 
@@ -162,7 +168,7 @@ function DirectoryRow({ items, panel, panelSide, interval }: DirectoryRowProps) 
               key={`${item.id}-${index}`}
               className="basis-[82%] pl-0 sm:basis-1/2 md:basis-1/3 lg:h-[467px] lg:basis-1/5"
             >
-              <DirectoryCardItem item={item} />
+              <DirectoryCardItem href={panel.href} item={item} />
             </CarouselItem>
           ))}
         </CarouselContent>

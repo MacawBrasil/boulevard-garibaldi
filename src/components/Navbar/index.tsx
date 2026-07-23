@@ -114,7 +114,7 @@ export function Navbar({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'text-[13px] font-bold leading-none text-white/90 transition hover:text-white',
+                    'text-[0.8125rem] font-bold leading-none text-white/90 transition hover:text-white',
                     isActive && 'text-white',
                   )}
                 >

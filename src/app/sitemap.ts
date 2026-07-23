@@ -5,7 +5,6 @@ import {
   getEventsPageGlobal,
   getGastronomyPageGlobal,
   getHomeGlobal,
-  getLegalPages,
   getShopsAndServicesPageGlobal,
 } from '@/lib/payload-data'
 import { getSiteURL } from '@/lib/seo'
@@ -27,15 +26,13 @@ function getURL(pathname: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [home, gastronomyPage, eventsPage, shopsAndServicesPage, contact, legalPages] =
-    await Promise.all([
-      getHomeGlobal(),
-      getGastronomyPageGlobal(),
-      getEventsPageGlobal(),
-      getShopsAndServicesPageGlobal(),
-      getContactGlobal(),
-      getLegalPages(),
-    ])
+  const [home, gastronomyPage, eventsPage, shopsAndServicesPage, contact] = await Promise.all([
+    getHomeGlobal(),
+    getGastronomyPageGlobal(),
+    getEventsPageGlobal(),
+    getShopsAndServicesPageGlobal(),
+    getContactGlobal(),
+  ])
 
   const routes: SitemapRoute[] = [
     {
@@ -73,15 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
       shouldIndex: !contact.seo?.noIndex,
     },
-    ...legalPages.docs.map((page): SitemapRoute => {
-      return {
-        pathname: `/${page.slug}`,
-        lastModified: page.updatedAt,
-        changeFrequency: 'monthly',
-        priority: 0.4,
-        shouldIndex: !page.seo?.noIndex,
-      }
-    }),
   ]
 
   return routes

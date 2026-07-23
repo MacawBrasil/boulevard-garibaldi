@@ -19,6 +19,9 @@ export const Footer: GlobalConfig = {
           label: 'Logo',
           relationTo: 'media',
           required: true,
+          admin: {
+            description: 'Dimensões padrão (237x72)',
+          },
         },
         {
           type: 'textarea',
@@ -115,25 +118,59 @@ export const Footer: GlobalConfig = {
           label: 'Links',
           fields: [
             {
-              type: 'select',
-              name: 'network',
-              label: 'Rede social',
+              type: 'text',
+              name: 'title',
+              label: 'Nome',
               required: true,
-              options: [
-                {
-                  label: 'Instagram',
-                  value: 'instagram',
-                },
-                {
-                  label: 'Facebook',
-                  value: 'facebook',
-                },
-              ],
+              admin: {
+                description: 'Exemplo: Instagram, Facebook, LinkedIn.',
+              },
+            },
+            {
+              type: 'upload',
+              name: 'icon',
+              label: 'Ícone',
+              relationTo: 'media',
+              required: true,
+              admin: {
+                description: 'Dimensões recomendadas: 30x30px. Use SVG ou PNG com fundo transparente.',
+              },
             },
             {
               type: 'text',
               name: 'url',
               label: 'URL',
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'group',
+      name: 'legalDocuments',
+      label: 'Documentos legais',
+      fields: [
+        {
+          type: 'array',
+          name: 'items',
+          label: 'Arquivos',
+          admin: {
+            description:
+              'Cadastre aqui os arquivos exibidos no rodapé, como política de privacidade, cookies, cordialidade e termos de uso.',
+          },
+          fields: [
+            {
+              type: 'text',
+              name: 'title',
+              label: 'Título',
+              required: true,
+            },
+            {
+              type: 'upload',
+              name: 'file',
+              label: 'Arquivo',
+              relationTo: 'media',
               required: true,
             },
           ],

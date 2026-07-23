@@ -16,6 +16,9 @@ export const GastronomyPage: GlobalConfig = {
       label: 'Imagem de Fundo',
       required: true,
       relationTo: 'media',
+      admin: {
+        description: 'Dimensões padrão (1920x552)',
+      },
     },
     {
       type: 'textarea',

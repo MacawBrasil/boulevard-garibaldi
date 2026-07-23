@@ -73,7 +73,6 @@ export interface Config {
     gastronomy: Gastronomy;
     events: Event;
     gallery: Gallery;
-    'legal-pages': LegalPage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -87,7 +86,6 @@ export interface Config {
     gastronomy: GastronomySelect<false> | GastronomySelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
-    'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -193,6 +191,10 @@ export interface Media {
  */
 export interface ShopsAndService {
   id: string;
+  _order?: string | null;
+  /**
+   * Dimensões padrão (566x662)
+   */
   image: string | Media;
   name: string;
   /**
@@ -218,7 +220,21 @@ export interface ShopsAndService {
    */
   phone: string;
   socialLinks: {
-    network: 'instagram' | 'whatsapp' | 'facebook';
+    /**
+     * Exemplo: Instagram, WhatsApp, Facebook.
+     */
+    title: string;
+    /**
+     * Dimensões recomendadas: 40x40px. Use SVG ou PNG com fundo transparente.
+     */
+    icon: string | Media;
+    /**
+     * Marque esta opção quando o campo abaixo for um telefone. O site vai montar o link wa.me automaticamente.
+     */
+    isWhatsappNumber?: boolean | null;
+    /**
+     * Para WhatsApp, informe o número com DDD. Exemplo: 54 99999 9999.
+     */
     url: string;
     id?: string | null;
   }[];
@@ -231,6 +247,10 @@ export interface ShopsAndService {
  */
 export interface Gastronomy {
   id: string;
+  _order?: string | null;
+  /**
+   * Dimensões padrão (566x662)
+   */
   image: string | Media;
   name: string;
   /**
@@ -256,7 +276,21 @@ export interface Gastronomy {
    */
   phone: string;
   socialLinks: {
-    network: 'instagram' | 'whatsapp' | 'facebook';
+    /**
+     * Exemplo: Instagram, WhatsApp, Facebook.
+     */
+    title: string;
+    /**
+     * Dimensões recomendadas: 40x40px. Use SVG ou PNG com fundo transparente.
+     */
+    icon: string | Media;
+    /**
+     * Marque esta opção quando o campo abaixo for um telefone. O site vai montar o link wa.me automaticamente.
+     */
+    isWhatsappNumber?: boolean | null;
+    /**
+     * Para WhatsApp, informe o número com DDD. Exemplo: 54 99999 9999.
+     */
     url: string;
     id?: string | null;
   }[];
@@ -269,6 +303,9 @@ export interface Gastronomy {
  */
 export interface Event {
   id: string;
+  /**
+   * Dimensões padrão (750x604)
+   */
   image: string | Media;
   /**
    * Exemplo: Participe da Estação Bem-estar
@@ -300,6 +337,9 @@ export interface Event {
  */
 export interface Gallery {
   id: string;
+  /**
+   * Dimensões padrão (1520x750)
+   */
   image: string | Media;
   /**
    * Texto opcional exibido sobre a imagem.
@@ -310,47 +350,6 @@ export interface Gallery {
    * Texto opcional exibido sobre a imagem.
    */
   description?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "legal-pages".
- */
-export interface LegalPage {
-  id: string;
-  title: string;
-  /**
-   * Exemplos: politica-de-cookies, politica-de-cordialidade, politica-de-privacidade, termos-de-uso
-   */
-  slug: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  seo: {
-    /**
-     * Título usado em mecanismos de busca e compartilhamentos.
-     */
-    title: string;
-    /**
-     * Descrição usada em mecanismos de busca e compartilhamentos.
-     */
-    description: string;
-    image?: (string | null) | Media;
-    noIndex?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -401,10 +400,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'gallery';
         value: string | Gallery;
-      } | null)
-    | ({
-        relationTo: 'legal-pages';
-        value: string | LegalPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -493,6 +488,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "shops-and-services_select".
  */
 export interface ShopsAndServicesSelect<T extends boolean = true> {
+  _order?: T;
   image?: T;
   name?: T;
   category?: T;
@@ -507,7 +503,9 @@ export interface ShopsAndServicesSelect<T extends boolean = true> {
   socialLinks?:
     | T
     | {
-        network?: T;
+        title?: T;
+        icon?: T;
+        isWhatsappNumber?: T;
         url?: T;
         id?: T;
       };
@@ -519,6 +517,7 @@ export interface ShopsAndServicesSelect<T extends boolean = true> {
  * via the `definition` "gastronomy_select".
  */
 export interface GastronomySelect<T extends boolean = true> {
+  _order?: T;
   image?: T;
   name?: T;
   category?: T;
@@ -533,7 +532,9 @@ export interface GastronomySelect<T extends boolean = true> {
   socialLinks?:
     | T
     | {
-        network?: T;
+        title?: T;
+        icon?: T;
+        isWhatsappNumber?: T;
         url?: T;
         id?: T;
       };
@@ -569,25 +570,6 @@ export interface GallerySelect<T extends boolean = true> {
   title?: T;
   date?: T;
   description?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "legal-pages_select".
- */
-export interface LegalPagesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  content?: T;
-  seo?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-        noIndex?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -640,9 +622,12 @@ export interface Home {
   hero?: {
     slides?:
       | {
+          /**
+           * Dimensões padrão (1920x970)
+           */
           image?: (string | null) | Media;
           /**
-           * Imagem para dispositivos móveis (tamanho: 375x667)
+           * Dimensões padrão (375x667)
            */
           imageMobile?: (string | null) | Media;
           id?: string | null;
@@ -651,13 +636,16 @@ export interface Home {
   };
   section: {
     /**
-     * Imagem para dispositivos móveis (tamanho: 750x750)
+     * Dimensões padrão (750x750)
      */
     image?: (string | null) | Media;
     title: string;
     description: string;
     items?:
       | {
+          /**
+           * Dimensões padrão (85x85)
+           */
           icon?: (string | null) | Media;
           title: string;
           id?: string | null;
@@ -665,6 +653,9 @@ export interface Home {
       | null;
   };
   banner: {
+    /**
+     * Dimensões padrão (1082x373)
+     */
     image?: (string | null) | Media;
     title: string;
     cta: string;
@@ -692,6 +683,9 @@ export interface Home {
 export interface Footer {
   id: string;
   brand: {
+    /**
+     * Dimensões padrão (237x72)
+     */
     logo: string | Media;
     address: string;
   };
@@ -720,8 +714,27 @@ export interface Footer {
     title: string;
     links?:
       | {
-          network: 'instagram' | 'facebook';
+          /**
+           * Exemplo: Instagram, Facebook, LinkedIn.
+           */
+          title: string;
+          /**
+           * Dimensões recomendadas: 30x30px. Use SVG ou PNG com fundo transparente.
+           */
+          icon: string | Media;
           url: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  legalDocuments?: {
+    /**
+     * Cadastre aqui os arquivos exibidos no rodapé, como política de privacidade, cookies, cordialidade e termos de uso.
+     */
+    items?:
+      | {
+          title: string;
+          file: string | Media;
           id?: string | null;
         }[]
       | null;
@@ -826,6 +839,9 @@ export interface EventsPage {
  */
 export interface GastronomyPage {
   id: string;
+  /**
+   * Dimensões padrão (1920x552)
+   */
   background: string | Media;
   description: string;
   group: {
@@ -867,6 +883,9 @@ export interface GastronomyPage {
  */
 export interface ShopsAndServicesPage {
   id: string;
+  /**
+   * Dimensões padrão (1920x552)
+   */
   background: string | Media;
   description: string;
   group: {
@@ -1018,8 +1037,20 @@ export interface FooterSelect<T extends boolean = true> {
         links?:
           | T
           | {
-              network?: T;
+              title?: T;
+              icon?: T;
               url?: T;
+              id?: T;
+            };
+      };
+  legalDocuments?:
+    | T
+    | {
+        items?:
+          | T
+          | {
+              title?: T;
+              file?: T;
               id?: T;
             };
       };

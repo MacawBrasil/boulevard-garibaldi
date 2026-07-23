@@ -12,7 +12,6 @@ import {
   getGastronomyItems,
   getGeneralSettingsGlobal,
   getHomeGlobal,
-  getLegalPages,
   getShopsAndServicesItems,
   getUpcomingEvents,
 } from '@/lib/payload-data'
@@ -110,7 +109,6 @@ export default async function HomePage() {
   const [
     home,
     footer,
-    legalPages,
     generalSettings,
     eventsPage,
     shopsResult,
@@ -119,7 +117,6 @@ export default async function HomePage() {
   ] = await Promise.all([
     getHomeGlobal(),
     getFooterGlobal(),
-    getLegalPages(),
     getGeneralSettingsGlobal(),
     getEventsPageGlobal(),
     getShopsAndServicesItems(12),
@@ -283,7 +280,7 @@ export default async function HomePage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalPages={legalPages.docs}
+        legalDocuments={footer.legalDocuments?.items}
       />
     </>
   )

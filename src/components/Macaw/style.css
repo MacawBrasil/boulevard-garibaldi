@@ -28,6 +28,12 @@
   rotate: 0deg;
 }
 
+@media (width >= 64rem) and (width <= 1366px) {
+  #macaw.footer-macaw-offset {
+    margin-right: 126px;
+  }
+}
+
 #macaw:hover #asas {
   animation: asas-fly 0.25s linear infinite;
   rotate: -5deg;

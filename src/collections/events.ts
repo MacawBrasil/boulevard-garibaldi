@@ -26,6 +26,9 @@ export const Events: CollectionConfig = {
       label: 'Imagem',
       relationTo: 'media',
       required: true,
+      admin: {
+        description: 'Dimensões padrão (750x604)',
+      },
     },
     {
       type: 'text',

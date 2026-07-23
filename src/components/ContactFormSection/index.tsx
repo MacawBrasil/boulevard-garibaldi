@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import type { HTMLInputTypeAttribute } from 'react'
-import { useActionState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { useFormStatus } from 'react-dom'
+import { toast } from 'sonner'
 
 import { submitContactForm, type ContactFormState } from '@/app/(frontend)/como-chegar/actions'
 import { Button } from '@/components/ui/button'
@@ -30,11 +31,29 @@ type ContactFieldProps = {
 }
 
 const fieldClasses =
-  'h-[57px] rounded-[5px] border border-[#d9d9d9] bg-transparent px-5 pt-4 text-[20px] text-white shadow-none placeholder:text-white/50 focus-visible:border-white focus-visible:ring-2 focus-visible:ring-white/20'
+  'h-[57px] rounded-[5px] border border-[#d9d9d9] bg-transparent px-5 pt-4 text-[1.25rem] text-white shadow-none placeholder:text-white/50 focus-visible:border-white focus-visible:ring-2 focus-visible:ring-white/20'
 
 const initialState: ContactFormState = {
   status: 'idle',
   message: '',
+}
+
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+
+  if (digits.length <= 2) {
+    return digits
+  }
+
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+  }
+
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+  }
+
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
 function SubmitButton() {
@@ -46,7 +65,7 @@ function SubmitButton() {
       variant="outline"
       size="sm"
       disabled={pending}
-      className="absolute bottom-4 right-4 h-[26px] rounded-full border-white bg-transparent px-3 py-1 text-[16px] font-normal leading-none text-white hover:bg-white hover:text-[#212322] disabled:opacity-60"
+      className="absolute bottom-4 right-4 h-[26px] cursor-pointer rounded-full border-white bg-transparent px-3 py-1 text-[1rem] font-normal leading-none text-white hover:bg-white hover:text-[#212322] disabled:cursor-default disabled:opacity-60"
     >
       {pending ? 'Enviando' : 'Enviar'}
     </Button>
@@ -58,7 +77,7 @@ function FloatingField({ id, label, type = 'text', name, error, className }: Con
     <div className={cn('relative', className)}>
       <Label
         htmlFor={id}
-        className="absolute -top-1 left-3 z-10 rounded-[3px] bg-[#874230] px-1.5 text-[20px] font-normal leading-none text-white"
+        className="absolute -top-1 left-3 z-10 rounded-[3px] bg-[#874230] px-1.5 text-[1.25rem] font-normal leading-none text-white"
       >
         {label}
       </Label>
@@ -75,6 +94,36 @@ function FloatingField({ id, label, type = 'text', name, error, className }: Con
   )
 }
 
+function PhoneField({ id, label, name, error, className }: Omit<ContactFieldProps, 'type'>) {
+  const [value, setValue] = useState('')
+
+  return (
+    <div className={cn('relative', className)}>
+      <Label
+        htmlFor={id}
+        className="absolute -top-1 left-3 z-10 rounded-[3px] bg-[#874230] px-1.5 text-[1.25rem] font-normal leading-none text-white"
+      >
+        {label}
+      </Label>
+      <Input
+        id={id}
+        name={name}
+        type="tel"
+        inputMode="numeric"
+        autoComplete="tel"
+        placeholder={label}
+        value={value}
+        onChange={(event) => {
+          setValue(formatPhone(event.target.value))
+        }}
+        aria-invalid={Boolean(error)}
+        className={fieldClasses}
+      />
+      <FieldError className="mt-1 text-white" errors={error ? [{ message: error }] : undefined} />
+    </div>
+  )
+}
+
 export function ContactFormSection({
   title,
   description,
@@ -82,6 +131,19 @@ export function ContactFormSection({
   backgroundImageAlt = '',
 }: ContactFormSectionProps) {
   const [state, formAction] = useActionState(submitContactForm, initialState)
+
+  useEffect(() => {
+    if (state.status === 'idle' || !state.message) {
+      return
+    }
+
+    if (state.status === 'success') {
+      toast.success(state.message)
+      return
+    }
+
+    toast.error(state.message)
+  }, [state.message, state.status])
 
   return (
     <section className="relative overflow-hidden bg-[#111312] py-14 text-white lg:py-[74px]">
@@ -127,11 +189,10 @@ export function ContactFormSection({
               type="email"
               error={state.fieldErrors?.email}
             />
-            <FloatingField
+            <PhoneField
               id="contact-phone"
               name="phone"
               label="Telefone"
-              type="tel"
               error={state.fieldErrors?.phone}
             />
           </div>
@@ -139,7 +200,7 @@ export function ContactFormSection({
           <div className="relative">
             <Label
               htmlFor="contact-message"
-              className="absolute -top-1 left-3 z-10 rounded-[3px] bg-[#874230] px-1.5 text-[20px] font-normal leading-none text-white"
+              className="absolute -top-1 left-3 z-10 rounded-[3px] bg-[#874230] px-1.5 text-[1.25rem] font-normal leading-none text-white"
             >
               Mensagem
             </Label>
@@ -148,7 +209,7 @@ export function ContactFormSection({
               name="message"
               placeholder="Mensagem"
               aria-invalid={Boolean(state.fieldErrors?.message)}
-              className="min-h-[223px] resize-none rounded-[5px] border border-[#d9d9d9] bg-transparent px-5 pb-14 pt-5 text-[20px] text-white shadow-none placeholder:text-white/50 focus-visible:border-white focus-visible:ring-2 focus-visible:ring-white/20"
+              className="min-h-[223px] resize-none rounded-[5px] border border-[#d9d9d9] bg-transparent px-5 pb-14 pt-5 text-[1.25rem] text-white shadow-none placeholder:text-white/50 focus-visible:border-white focus-visible:ring-2 focus-visible:ring-white/20"
             />
             <FieldError
               className="mt-1 text-white"
@@ -159,17 +220,6 @@ export function ContactFormSection({
             <SubmitButton />
           </div>
 
-          {state.message ? (
-            <p
-              role="status"
-              className={cn(
-                'text-[16px] leading-normal lg:col-span-2',
-                state.status === 'success' ? 'text-white' : 'text-[#ffdad3]',
-              )}
-            >
-              {state.message}
-            </p>
-          ) : null}
         </form>
       </div>
     </section>

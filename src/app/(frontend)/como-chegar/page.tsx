@@ -8,9 +8,9 @@ import {
   getContactGlobal,
   getFooterGlobal,
   getGeneralSettingsGlobal,
-  getLegalPages,
 } from '@/lib/payload-data'
 import { buildSEOMetadata } from '@/lib/seo'
+import { normalizePhoneHref, normalizePhoneNumber } from '@/lib/utils'
 
 import type { Media } from '@/payload-types'
 import type { Metadata } from 'next'
@@ -43,20 +43,10 @@ function getMediaURL(media?: Media | string | null) {
   return null
 }
 
-function normalizePhoneHref(phone: string) {
-  const digits = phone.replace(/\D/g, '')
-
-  if (!digits) {
-    return ''
-  }
-
-  return `tel:${digits}`
-}
-
 function getWhatsappUrl(phone: string, message?: string | null) {
   const params = message ? `?text=${encodeURIComponent(message)}` : ''
 
-  return `https://wa.me/${phone}${params}`
+  return `https://wa.me/${normalizePhoneNumber(phone)}${params}`
 }
 
 function getMapsEmbedUrl(mapUrl: string, fallbackAddress: string) {
@@ -120,10 +110,9 @@ function FloatingWhatsapp({ phone, message }: { phone: string; message?: string 
 }
 
 export default async function ContactPage() {
-  const [contact, footer, legalPages, generalSettings] = await Promise.all([
+  const [contact, footer, generalSettings] = await Promise.all([
     getContactGlobal(),
     getFooterGlobal(),
-    getLegalPages(),
     getGeneralSettingsGlobal(),
   ])
 
@@ -232,7 +221,7 @@ export default async function ContactPage() {
                   />
                 </svg>
 
-                <div className="relative z-10 aspect-[749/670] min-h-[360px] overflow-hidden bg-white shadow-[-21px_18px_23px_rgba(0,0,0,0.25)]">
+                <div className="relative z-10 h-[360px] w-full max-w-full overflow-hidden bg-white shadow-[-10px_12px_18px_rgba(0,0,0,0.2)] sm:h-[460px] lg:aspect-[749/670] lg:h-auto lg:min-h-[360px] lg:shadow-[-21px_18px_23px_rgba(0,0,0,0.25)]">
                   <iframe
                     src={mapEmbedUrl}
                     title="Mapa com localização do Boulevard Garibaldi"
@@ -280,7 +269,7 @@ export default async function ContactPage() {
         contacts={footer.contacts.items}
         socialTitle={footer.social.title}
         socialLinks={footer.social.links}
-        legalPages={legalPages.docs}
+        legalDocuments={footer.legalDocuments?.items}
       />
     </>
   )

@@ -23,13 +23,16 @@ export const Home: GlobalConfig = {
               name: 'image',
               label: 'Imagem',
               relationTo: 'media',
+              admin: {
+                description: 'Dimensões padrão (1920x970)',
+              },
             },
             {
               type: 'upload',
               name: 'imageMobile',
               label: 'Imagem Mobile',
               admin: {
-                description: 'Imagem para dispositivos móveis (tamanho: 375x667)',
+                description: 'Dimensões padrão (375x667)',
               },
               relationTo: 'media',
             },
@@ -46,7 +49,7 @@ export const Home: GlobalConfig = {
           name: 'image',
           label: 'Imagem',
           admin: {
-            description: 'Imagem para dispositivos móveis (tamanho: 750x750)',
+            description: 'Dimensões padrão (750x750)',
           },
           relationTo: 'media',
         },
@@ -71,6 +74,9 @@ export const Home: GlobalConfig = {
               name: 'icon',
               label: 'Ícone',
               relationTo: 'media',
+              admin: {
+                description: 'Dimensões padrão (85x85)',
+              },
             },
             {
               type: 'text',
@@ -91,6 +97,9 @@ export const Home: GlobalConfig = {
           name: 'image',
           label: 'Imagem',
           relationTo: 'media',
+          admin: {
+            description: 'Dimensões padrão (1082x373)',
+          },
         },
         {
           type: 'text',
